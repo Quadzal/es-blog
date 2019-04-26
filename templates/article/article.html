@@ -1,0 +1,70 @@
+{% extends "shared/navbar.html" %}
+
+{% block title %}
+    <title>ES-Blog | {{article.title}}</title>
+{% endblock title %}
+{% load crispy_forms_tags %}
+{% block body %}
+  <!-- Page Content -->
+  <div class="container">
+    <div class="row">
+      <!-- Post Content Column -->
+      <div class="col-lg-8">
+        <!-- Title -->
+        <h3 class="mt-4">{{ article.title }}</h3>
+        <!-- Author And Datetime -->
+        <p class="lead">
+            <i>Gönderi Tarihi: {{ article.created_date }} Yazar:<a href="/author/{{article.author}}">{{ article.author }}</a></i>
+        </p>
+        <hr>
+        <!-- Preview Image -->
+        <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+        <hr>
+        <!-- Post Content -->
+        <p class="lead">{{ article.content| safe }}</p>
+        <hr>
+        
+        <!-- Post Comment Column -->
+        {% if article.comments.all %}
+            {% for comment in article.comments.all %}
+                <div class="media mb-4">
+                    <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                    <div class="media-body">
+                        <h5 class="mt-0">{{comment.author}}</h5>
+                        {{comment.content}}
+                    </div>
+                </div>
+                <hr>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-danger">Henüz Bu Makalede Yorum Bulunmuyor</div>
+        {% endif %}
+        <!-- /.Post Comment Column -->
+        
+        
+
+        {% if request.user.is_authenticated %}
+          <div class="card my-0">
+            <h5 class="card-header">Yorum Atınız:</h5>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary float-right w-25">Yorumu Gönder</button>
+                </form>
+            </div>
+          </div>
+        {% else %}
+          <div class="alert alert-danger">Yorum Atmak İçin Giriş Yapmalısınız!</div>
+        {% endif %}
+      </div>
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container -->
+  <!-- Bootstrap core JavaScript -->
+  
+{% endblock body %}
+
+
+
